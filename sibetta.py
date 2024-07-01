@@ -1,37 +1,11 @@
-import os
-import subprocess
-import sys
-
-# Pastikan tensorflow, Pillow, dan gdown sudah terinstal
-packages = ['tensorflow', 'Pillow', 'gdown']
-for package in packages:
-    try:
-        __import__(package)
-    except ImportError:
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
-
 import streamlit as st
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 from PIL import Image
-import gdown
-
-# URL Google Drive dan ID file model
-file_id = '1-kfqtlXmKnG8JBrbvcCDEs9zmdAcwbOq'
-destination = 'best_model(85_74).h5'
-
-# Fungsi untuk mengunduh model dari Google Drive
-def download_model_from_google_drive(file_id, destination):
-    url = f'https://drive.google.com/uc?id={file_id}'
-    gdown.download(url, destination, quiet=False)
-
-# Unduh model jika belum ada di lokal
-if not os.path.exists(destination):
-    download_model_from_google_drive(file_id, destination)
 
 # Memuat model
-model = load_model(destination)
+model = load_model('../best_model(85_74).h5')
 
 # Fungsi untuk memproses gambar dan melakukan prediksi
 def load_and_preprocess_image(img, target_size=(224, 224)):
