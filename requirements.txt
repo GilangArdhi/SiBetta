@@ -1,5 +1,4 @@
 numpy
-PIL
 pandas
 streamlit
 pip
