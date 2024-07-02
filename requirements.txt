@@ -1,9 +1,11 @@
-pip install numpy==1.26.4
+numpy==1.26.4
+PIL
 pandas
 streamlit
 pip
 scikit-learn
 sklearn
-catboost
+tensorflow
+pillow
 matplotlib
 seaborn
