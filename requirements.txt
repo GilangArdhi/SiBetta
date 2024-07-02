@@ -2,8 +2,6 @@ numpy
 pandas
 streamlit
 pip
-scikit-learn
-sklearn
 tensorflow
 pillow
 matplotlib
