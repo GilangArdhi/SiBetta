@@ -1,8 +1,5 @@
-numpy
-pandas
+numpy==1.26.4
+PIL
 streamlit
-pip
-tensorflow
-pillow
-matplotlib
-seaborn
+tensorflow==2.13.0
+keras====2.13.0
