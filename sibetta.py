@@ -4,26 +4,11 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 from PIL import Image
 
-# Memuat model
-model = load_model('../best_model(85_74).h5')
 
-# Fungsi untuk memproses gambar dan melakukan prediksi
-def load_and_preprocess_image(img, target_size=(224, 224)):
-    img = img.resize(target_size)  # Ubah ukuran gambar
-    img_array = image.img_to_array(img)  # Ubah gambar menjadi array
-    img_array = np.expand_dims(img_array, axis=0)  # Tambahkan dimensi batch
-    img_array /= 255.0  # Rescale nilai pixel
-    return img_array
-
-# Fungsi untuk memprediksi kelas gambar
-def predict_image_class(model, img, class_indices):
-    img_array = load_and_preprocess_image(img)
-    prediction = model.predict(img_array)
-    predicted_class = np.argmax(prediction, axis=1)
-    class_labels = {v: k for k, v in class_indices.items()}  # Membalikkan class_indices
-    confidence = prediction[0][predicted_class[0]]  # Probability of predicted class
-    return class_labels[predicted_class[0]], confidence
-
+# Load the saved model (architecture + weights)
+model = load_model('./best_model_16.h5')
+# Define class indices (for prediction)
+# You can load these from a saved file or set them manually
 class_indices = {
     'coccina': 0,
     'crown_tail': 1,
@@ -36,6 +21,25 @@ class_indices = {
     'spade_tail': 8,
     'veil_tail': 9
 }
+
+# Function to preprocess image for model prediction
+def load_and_preprocess_image(img, target_size=(224, 224)):
+    img = img.resize(target_size)  # Resize the image to 224x224 pixels
+    img_array = image.img_to_array(img)  # Convert the image to a numpy array
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+    img_array /= 255.0  # Normalize the image by scaling pixel values to [0, 1]
+    return img_array
+
+# Function to predict the image class
+def predict_image_class(model, img, class_indices):
+    img_array = load_and_preprocess_image(img)  # Preprocess image
+    prediction = model.predict(img_array)  # Make prediction
+    predicted_class = np.argmax(prediction, axis=1)  # Get the class with the highest score
+    class_labels = {v: k for k, v in class_indices.items()}  # Reverse class_indices for label lookup
+    confidence = prediction[0][predicted_class[0]]  # Get the probability of the predicted class
+    return class_labels[predicted_class[0]], confidence  # Return predicted class and confidence
+
+
 
 # Set background color for the header
 st.markdown(
