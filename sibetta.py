@@ -1,14 +1,30 @@
 import streamlit as st
+import gdown
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 from PIL import Image
+import os
 
 
-# Load the saved model (architecture + weights)
-model = load_model('./best_model_16.h5')
+# URL Google Drive untuk model .h5
+url = "https://drive.google.com/uc?id=1hw_C0TIXi-t_-7MV70_p7Ta8SPNlKNT3"
+output = "best_model_16.h5"
+
+# Unduh model jika belum ada di direktori lokal
+if not os.path.exists(output):
+    st.write("Downloading model...")
+    gdown.download(url, output, quiet=False)
+
+# Load model hanya sekali
+@st.cache_resource
+def load_model_once():
+    model = load_model(output)
+    return model
+
+model = load_model_once()
+
 # Define class indices (for prediction)
-# You can load these from a saved file or set them manually
 class_indices = {
     'coccina': 0,
     'crown_tail': 1,
@@ -24,22 +40,20 @@ class_indices = {
 
 # Function to preprocess image for model prediction
 def load_and_preprocess_image(img, target_size=(224, 224)):
-    img = img.resize(target_size)  # Resize the image to 224x224 pixels
-    img_array = image.img_to_array(img)  # Convert the image to a numpy array
-    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
-    img_array /= 255.0  # Normalize the image by scaling pixel values to [0, 1]
+    img = img.resize(target_size)
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array /= 255.0
     return img_array
 
 # Function to predict the image class
 def predict_image_class(model, img, class_indices):
-    img_array = load_and_preprocess_image(img)  # Preprocess image
-    prediction = model.predict(img_array)  # Make prediction
-    predicted_class = np.argmax(prediction, axis=1)  # Get the class with the highest score
-    class_labels = {v: k for k, v in class_indices.items()}  # Reverse class_indices for label lookup
-    confidence = prediction[0][predicted_class[0]]  # Get the probability of the predicted class
-    return class_labels[predicted_class[0]], confidence  # Return predicted class and confidence
-
-
+    img_array = load_and_preprocess_image(img)
+    prediction = model.predict(img_array)
+    predicted_class = np.argmax(prediction, axis=1)
+    class_labels = {v: k for k, v in class_indices.items()}
+    confidence = prediction[0][predicted_class[0]]
+    return class_labels[predicted_class[0]], confidence
 
 # Set background color for the header
 st.markdown(
