@@ -1,5 +1,6 @@
-numpy
-PIL
 streamlit
 tensorflow==2.13.0
 keras====2.13.0
+gdown
+Pillow
+numpy
