@@ -48,12 +48,16 @@ def load_and_preprocess_image(img, target_size=(224, 224)):
 
 # Function to predict the image class
 def predict_image_class(model, img, class_indices):
-    img_array = load_and_preprocess_image(img)
-    prediction = model.predict(img_array)
-    predicted_class = np.argmax(prediction, axis=1)
-    class_labels = {v: k for k, v in class_indices.items()}
-    confidence = prediction[0][predicted_class[0]]
-    return class_labels[predicted_class[0]], confidence
+    try:
+        img_array = load_and_preprocess_image(img)
+        prediction = model.predict(img_array)
+        predicted_class = np.argmax(prediction, axis=1)
+        class_labels = {v: k for k, v in class_indices.items()}
+        confidence = prediction[0][predicted_class[0]]
+        return class_labels[predicted_class[0]], confidence
+    except Exception as e:
+        st.error("Terdapat kesalahan dalam pemrosesan gambar, Mohon gunakan gambar yang sesuai")
+        return None, None
 
 # Set background color for the header
 st.markdown(
